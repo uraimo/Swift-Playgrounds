@@ -1,2 +1,3 @@
 # Swift-Playgrounds
-A collection of playground used in my posts
+
+A collection of playgrounds used in my posts
