@@ -17,7 +17,7 @@ o1m /* Int? with content nil */
 o1 = 1
 
 o1m = o1.map({$0 * 2})
-o1m /* Int? with content 1 */
+o1m /* Int? with content 2 */
 
 var os1m = o1.map({ (value) -> String in
     String(value * 2)
