@@ -28,6 +28,17 @@ let tweet = "This is an example tweet larking about Swift"
 let valid = !words.filter({tweet.containsString($0)}).isEmpty
 valid //true
 
+//Or alternatively, as suggested by @oisdk
+
+let valid2 = words.contains(tweet.containsString)
+valid2 //true
+
+let valid3 = tweet.characters
+            .split(" ")
+            .lazy
+            .map(String.init)
+            .contains(Set(words).contains)
+valid3 //true
 
 //:#4 Read in a File
 
