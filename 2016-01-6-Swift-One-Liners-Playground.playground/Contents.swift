@@ -58,7 +58,7 @@ if let lines=lines {
 
 
 let name = "uraimo"
-(1...4).map{print("Happy Birthday " + (($0 == 3) ? "dear \(name)":"to You"))}
+(1...4).forEach{print("Happy Birthday " + (($0 == 3) ? "dear \(name)":"to You"))}
 
 
 //:#6 Filter list of numbers
