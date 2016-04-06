@@ -1,7 +1,7 @@
 //: Swift And C Playground
 //: -----
 //:
-//: See original post at [https://www.uraimo.com/](https://www.uraimo.com/)
+//: See original post at [https://www.uraimo.com/2016/04/06/swift-and-c-everything-you-need-to-know](https://www.uraimo.com/2016/04/06/swift-and-c-everything-you-need-to-know)
 //:
 //: To execute this playground you need to build the C framework CExample first, just open the workspace, select  the CExample project and build it with cmd+B and then open the playground. Don't just open the playgoud directly or it will not be able to find the C module it needs
 
