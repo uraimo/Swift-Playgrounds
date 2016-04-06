@@ -2,6 +2,7 @@
 
 A collection of Swift2+ playgrounds used in my posts:
 
+* 6 April 2016: [Swift and C]() [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-04-06-Swift-And-C.zip)
 * 5 February 2016: [Dealing with Bit Sets in Swift](https://www.uraimo.com/2016/02/05/Dealing-With-Bit-Sets-In-Swift) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-02-5-Bitwise-Playground.playground.zip)
 * 6 Jannuary 2016: [10 Swift One Liners To Impress Your Friends](http://www.uraimo.com/2016/01/06/10-Swift-One-Liners-To-Impress-Your-Friends/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-01-6-Swift-One-Liners-Playground.playground.zip)
 * 12 November 2015: [Experimenting with Swift Sequences and Generators](http://www.uraimo.com/2015/11/12/experimenting-with-swift-2-sequencetype-generatortype/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2015-11-12-SequenceTypeGeneratorTypePlayground.playground.zip)
