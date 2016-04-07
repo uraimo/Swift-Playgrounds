@@ -22,6 +22,8 @@ typedef void (*function_type)(void);
 
 function_type returnAFunction();
 
+void aCFunctionWithContext(void* ctx, void (*function)(void* ctx));
+
 typedef struct {
     char name[5];
     int value;

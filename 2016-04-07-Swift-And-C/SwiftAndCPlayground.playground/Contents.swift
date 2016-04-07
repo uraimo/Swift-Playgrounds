@@ -11,7 +11,7 @@ import Foundation
 import CExample
 
 
-//: Arrays and Structs
+//: ### Arrays and Structs
 //:
 
 print(name)
@@ -20,7 +20,7 @@ let ms = MyStruct(name: (0, 0, 0, 0, 0), value: 1)
 print(ms)
 
 
-//: The size of things
+//: ### The size of things
 //:
 
 print(strideof(CChar))  // 1
@@ -34,13 +34,13 @@ struct Struct1{
 print(sizeof(Struct1))    // 11 (8+2+1)
 print(strideof(Struct1))  // 16 (8+4+4)
 
-//: Macros
+//: ### Macros
 //:
 
 IAMADEFINE  //42
 
 
-//: Working with Pointers
+//: ### Working with Pointers
 //:
 
 var i:Int32 = 42
@@ -49,6 +49,7 @@ giveMeUnsafeMutablePointer(&i);
 
 let namestr = withUnsafePointer(&name, { (ptr) -> String? in
     let charPtr = UnsafeMutablePointer<CChar>(ptr)
+    charPtr[2] = 35 // # character
     return String.fromCString(charPtr)
 })
 print(namestr!) //IAmAString
@@ -60,13 +61,16 @@ array.withUnsafeBufferPointer { (ptr: UnsafeBufferPointer<Int8>) in
     puts(ptr.baseAddress + 1) //BC
 }
 
-//: Allocating memory
+//: ### Allocating memory
 //:
 
 var ptr = UnsafeMutablePointer<CChar>.alloc(10)
 //Or alternatively: var ptr = UnsafeMutablePointer<CChar>(malloc(10*strideof(CChar)))
 
 ptr.initializeFrom([CChar](count: 10, repeatedValue: 0))
+
+//Do something with the object
+ptr[3] = 42
 
 ptr.destroy() //Clean up
 
@@ -81,17 +85,57 @@ print(sptr.memory)
 sptr.destroy()
 sptr.dealloc(1)
 
+//: Is initialization really necessary?
 
-var val = 42
-var buf = [CChar](count: sizeofValue(val), repeatedValue: 0)
-memcpy(&buf, &val, Int(buf.count))
+struct MyStruct1{
+    var int1:Int
+    var int2:Int
+}
+
+var s1ptr = UnsafeMutablePointer<MyStruct1>.alloc(5)
+
+s1ptr[0] = MyStruct1(int1: 1, int2: 2)
+s1ptr[1] = MyStruct1(int1: 1, int2: 2) //Doesn't seems so, this always works!
+
+s1ptr.destroy()
+s1ptr.dealloc(5)
+
+//: Let's try introducing a reference type property to MyStruct
+
+class TestClass{
+    var aField:Int = 0
+}
+
+struct MyStruct2{
+    var int1:Int
+    var int2:Int
+    var tc:TestClass
+}
+
+var s2ptr = UnsafeMutablePointer<MyStruct2>.alloc(5)
+s2ptr.initializeFrom([MyStruct2(int1: 1, int2: 2, tc: TestClass()),   // Remove the initialization
+                      MyStruct2(int1: 1, int2: 2, tc: TestClass())])  // and you'll have a crash below
+
+s2ptr[0] = MyStruct2(int1: 1, int2: 2, tc: TestClass())
+s2ptr[1] = MyStruct2(int1: 1, int2: 2, tc: TestClass())
+
+s2ptr.destroy()
+s2ptr.dealloc(5)
+
+
+//: Other examples from the malloc family:
+
+var val = [CChar](count: 10, repeatedValue: 1)
+var buf = [CChar](count: val.count, repeatedValue: 0)
+memcpy(&buf, &val, buf.count*strideof(CChar))
+buf
 
 let mptr = UnsafeMutablePointer<Int>(mmap(nil, Int(getpagesize()), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0))
 mptr[0] = 3
 
 munmap(ptr, Int(getpagesize()))
 
-//: Pointer arithmetic
+//: ### Pointer arithmetic
 //:
 
 var aptr = UnsafeMutablePointer<CChar>.alloc(5)
@@ -103,17 +147,15 @@ print(aptr.advancedBy(3).predecessor().memory) // 35
 
 print(aptr.distanceTo(aptr.advancedBy(3))) // 3
 
-aptr.destroy()
-aptr.dealloc(5)
-
 
 print((aptr+1).memory) // 34
 print((aptr+3).memory) // 36
-print(((aptr+3)-1).memory) // This will not work!
+print(((aptr+3)-1).memory) // 35
 
+aptr.destroy()
+aptr.dealloc(5)
 
-
-//: Working with strings
+//: ### Working with strings
 //:
 
 puts("Hey! I was a Swift string!")
@@ -141,7 +183,7 @@ func isPrintable(text:String)->Bool{
 isPrintable("No, it's not 😅")
 
 
-//: Working with closures
+//: ### Working with closures
 //:
 
 printStuff(); // Imported C function defined in CExample.c
@@ -149,7 +191,28 @@ printStuff(); // Imported C function defined in CExample.c
 let fun = returnAFunction(); // Imported C function defined in CExample.c
 fun()
 
+//: Unmanaged
 
+class AClass : CustomStringConvertible {
+    
+    var aProperty:Int=0
+
+    var description: String {
+        return "A \(self.dynamicType) with property \(self.aProperty)"
+    }
+}
+
+var value = AClass()
+
+let unmanaged = Unmanaged.passRetained(value)
+let uptr = unmanaged.toOpaque()
+let vptr = UnsafeMutablePointer<Void>(uptr)
+
+aCFunctionWithContext(vptr){ (p:UnsafeMutablePointer<Void>) -> Void in
+    var c = Unmanaged<AClass>.fromOpaque(COpaquePointer(p)).takeUnretainedValue()
+    c.aProperty = 2
+    print(c) //A AClass with property 2
+}
 
 
 

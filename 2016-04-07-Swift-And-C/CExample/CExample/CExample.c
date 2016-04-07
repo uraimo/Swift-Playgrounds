@@ -8,6 +8,7 @@
 
 #include "CExample.h"
 #include <stdio.h>
+#include <unistd.h>
 
 
 void printStuff(){
@@ -25,4 +26,9 @@ void functionThatExpectsAConstCharPointer(const char * param){
 
 function_type returnAFunction(){
     return &printStuff;
+}
+
+void aCFunctionWithContext(void* ctx, void (*function)(void* ctx)){
+    sleep(3);
+    function(ctx);
 }
