@@ -32,4 +32,10 @@ typedef struct {
 char name[] = "IAmAString";
 char* anotherName = "IAmAStringToo";
 
+union TestUnion {
+    int i;
+    float f;
+    unsigned char asChar[4];
+} testUnion;
+
 #endif /* CExample_h */

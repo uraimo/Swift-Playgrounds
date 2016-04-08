@@ -20,6 +20,20 @@ let ms = MyStruct(name: (0, 0, 0, 0, 0), value: 1)
 print(ms)
 
 
+//: ### Unions
+
+testUnion.i = 33
+testUnion.f  // 4.624285e-44
+testUnion.i  // 33
+testUnion.f = 1234567
+testUnion.f  // 1234567
+testUnion.i  // 1234613304
+testUnion.asChar // (56, 180, 150, 73)
+
+var fv:Float32 = unsafeBitCast(Int32(33), Float.self)
+
+strideof(TestUnion)  // 4 bytes
+
 //: ### The size of things
 //:
 
