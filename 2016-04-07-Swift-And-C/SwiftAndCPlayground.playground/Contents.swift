@@ -25,6 +25,8 @@ print(ms)
 testUnion.i = 33
 testUnion.f  // 4.624285e-44
 testUnion.i  // 33
+testUnion.asChar // (33, 0, 0, 0)
+
 testUnion.f = 1234567
 testUnion.f  // 1234567
 testUnion.i  // 1234613304
