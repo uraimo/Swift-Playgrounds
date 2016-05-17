@@ -164,7 +164,7 @@ public class AEXMLElement: NSObject {
             var countAttributes = 0
             for (key, value) in attributes {
                 if element.attributes[key] == value {
-                    countAttributes++
+                    countAttributes += 1
                 }
             }
             return countAttributes == attributes.count
@@ -216,17 +216,18 @@ public class AEXMLElement: NSObject {
         var count = 0
         var element = self
         while let parent = element.parent {
-            count++
+            count += 1
             element = parent
         }
         return count
     }
     
-    private func indentation(var count: Int) -> String {
+    private func indentation(count: Int) -> String {
+        var icount = count
         var indent = String()
-        while count > 0 {
+        while icount > 0 {
             indent += "\t"
-            count--
+            icount -= 1
         }
         return indent
     }

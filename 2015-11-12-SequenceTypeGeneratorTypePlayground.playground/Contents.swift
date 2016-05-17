@@ -20,7 +20,7 @@ class FibonacciGenerator : GeneratorType {
         guard lastIteration<endAt else {
             return nil
         }
-        lastIteration++
+        lastIteration += 1
         
         let next = last.0
         last = (last.1,last.0+last.1)
@@ -73,16 +73,16 @@ class CompactFibonacciSequence : SequenceType {
         var last = (0,1)
         var lastIteration = 0
         
-        return anyGenerator({
+        return AnyGenerator{
             guard lastIteration<self.endAt else {
                 return nil
             }
-            lastIteration++
+            lastIteration += 1
             
             let next = last.0
             last = (last.1,last.0+last.1)
             return next
-        })
+        }
     }
 }
 
@@ -96,13 +96,13 @@ for f in CompactFibonacciSequence(end: 10) {
 var last = (2,1)
 var c = 0
 
-let lucas = anyGenerator{
+let lucas = AnyGenerator{
     ()->Int? in
     guard c<10 else {
         return nil
     }
     
-    c++
+    c += 1
     let next = last.0
     last = (last.1,last.0+last.1)
     return next
@@ -123,21 +123,21 @@ func luc(n:Int)->Int {
 }
 
 c = 0
-var compactLucas = anyGenerator{ c<10 ? luc(c++): nil }
+var compactLucas = AnyGenerator{ c<10 ? luc(c+1): nil }
 
 let a2 = Array(compactLucas) //[2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
 
 //: To try out some of the functional(ish) facilities that **SequenceType** provide, we'll now build a derived sequence that will only return *even* numbers from the Lucas sequence:
 
 c = 0
-var evenCompactLucas = anyGenerator{ c<10 ? luc(c++): nil }.filter({$0 % 2 == 0})
+var evenCompactLucas = AnyGenerator{ c<10 ? luc(c+1): nil }.filter({$0 % 2 == 0})
 
 let a3 = Array(evenCompactLucas) //[2, 4, 18, 76]
 
 //: But now, what it we remove the nil termination requirement described above to build an infinite sequence of all the possible Lucas numbers?
 
 c = 0
-var infiniteLucas = anyGenerator{luc(c++)}
+var infiniteLucas = AnyGenerator{luc(c+1)}
 
 
 let a4 = Array(infiniteLucas.prefix(10)) //[2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
@@ -159,10 +159,11 @@ for var f in onlyEvenLucas.prefix(10){
 class InfiniteSequence :SequenceType {
     func generate() -> AnyGenerator<Int> {
         var i = 0
-        return anyGenerator({
+        return AnyGenerator{
             print("# Returning "+String(i))
-            return i++
-        })
+            i += 1
+            return i
+        }
     }
 }
 
