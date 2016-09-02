@@ -1,6 +1,8 @@
 # Swift-Playgrounds
 
-A collection of Swift2+ playgrounds used in my posts:
+A collection of Swift2+ playgrounds used in my posts.
+
+These playgrounds will be slowly converted to Swift 3, for the original Swift 2 playgrounds check out the [swift 2 branch](https://github.com/uraimo/Swift-Playgrounds/tree/swift2).
 
 * 5th May 2016: [Recursive Tail Calls and Trampolines in Swift](https://www.uraimo.com/2016/05/05/recursive-tail-calls-and-trampolines-in-swift/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-05-05-recursive-trampoline.zip)
 * 6th April 2016: [Swift and C: Everything you need to know](https://www.uraimo.com/2016/04/07/swift-and-c-everything-you-need-to-know) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-04-07-Swift-And-C.zip)
