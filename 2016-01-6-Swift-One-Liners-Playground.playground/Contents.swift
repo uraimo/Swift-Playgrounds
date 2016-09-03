@@ -110,7 +110,7 @@ part3 // ([58, 49], [82, 76, 88, 90])
 
 
 //Uncomment to enable, will reload on every modification
-/*
+
 let xmlDoc = try? AEXMLDocument(xmlData: NSData(contentsOf: URL(string:"https://www.ibiblio.org/xml/examples/shakespeare/hen_v.xml")!)!) 
 
 if let xmlDoc=xmlDoc {
@@ -121,7 +121,7 @@ if let xmlDoc=xmlDoc {
     prologue.children[4].stringValue // Reigns solely in the breast of every man:
     prologue.children[5].stringValue // They sell the pasture now to buy the horse,
 }
-*/
+
 
 //:#8 Find minimum (or maximum) in a List
 
@@ -149,8 +149,7 @@ if let xmlDoc=xmlDoc {
 var n = 50
 var primes = Set(2...n)
 
-var n = 50 
-var primes = Set(2...n) 
+
 (2...Int(sqrt(Double(n)))).forEach{
      primes.subtract(Set(stride(from:2*$0, to:n, by:$0)))
 }
