@@ -15,7 +15,7 @@ var int3:UInt8 = 0xA7
 //: Where are we?? We can check the size of the Int type with strideof(or sizeof in this case) to understand on wich platform we are
 //:
 
-strideof(Int)==strideof(Int32) //Are we on a 32bits platform? Nope.
+MemoryLayout<Int>.stride==MemoryLayout<Int32>.stride //Are we on a 32bits platform? Nope.
 
 //: Swift does not perform implicit conversions
 //:
@@ -134,7 +134,7 @@ x = x ^ y   // x is now 2
 //: Double negation bitwise operator ~~
 //:
 
-prefix operator ~~ {}
+prefix operator ~~
 prefix func ~~(value: UInt8)->UInt8{
     return (value>0) ? 1 : 0
 }

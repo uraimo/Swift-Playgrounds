@@ -4,7 +4,7 @@
 
 /////////////////////////////////////
 //Simple Example
-enum MyError : ErrorType{
+enum MyError : Error{
     case AnError
     case AnotherError
     case JustAnotherError
@@ -40,7 +40,7 @@ do{
 /////////////////////////////////////
 // More complex example
 
-enum MyError2 : ErrorType{
+enum MyError2 : Error{
     case GenericError
     case DetailedError(String)
     case NumericError(Int)
@@ -69,7 +69,7 @@ do{
 }catch MyError2.NumericError(let number) where number>0{
     print("Error with id: "+String(number))
 }catch{
-    print("Something else happened: "+String(error))
+    print("Something else happened: "+String(describing:error))
 }
 
 

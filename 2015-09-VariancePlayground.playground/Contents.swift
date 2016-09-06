@@ -9,9 +9,9 @@ func innerAnyAny(p1:Any) -> Any{ return 1 }
 func innerIntInt(p1:Int) -> Int{ return 1 }
 func innerIntAny(p1:Int) -> Any{ return 1 }
 
-testVariance(innerIntAny)
-testVariance(innerAnyInt)
-testVariance(innerAnyAny)
-testVariance(innerIntInt)
+testVariance(foo:innerIntAny)
+testVariance(foo:innerAnyInt)
+testVariance(foo:innerAnyAny)
+testVariance(foo:innerIntInt)
 
  

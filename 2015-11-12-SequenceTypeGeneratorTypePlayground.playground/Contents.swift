@@ -7,7 +7,7 @@
 
 
 //:Let's build a simple generator that produces numbers from the well known Fibonacci sequence:
-class FibonacciGenerator : GeneratorType {
+class FibonacciIterator : IteratorProtocol {
     var last = (0,1)
     var endAt:Int
     var lastIteration = 0
@@ -30,7 +30,7 @@ class FibonacciGenerator : GeneratorType {
 
 //: To return a finite sequence we need an additional constructor that we'll use to specify the sequence length and return *nil* instead of a new element when we reach it. There is not much else to see here other than the tuple swap trick that save us a few lines, but let's see how to use this generator: 
 
-var fg = FibonacciGenerator(end:10)
+var fg = FibonacciIterator(end:10)
 
 while let fib = fg.next() {
     print(fib)
@@ -41,15 +41,15 @@ while let fib = fg.next() {
     
 //: Implementing a **SequenceType** for this generator is straightforward:
 
-class FibonacciSequence : SequenceType {
+class FibonacciSequence : Sequence {
     var endAt:Int
     
     init(end:Int){
         endAt = end
     }
     
-    func generate() -> FibonacciGenerator{
-        return FibonacciGenerator(end: endAt)
+    func makeIterator() -> FibonacciIterator{
+        return FibonacciIterator(end: endAt)
     }
 }
 
@@ -62,18 +62,18 @@ for f in FibonacciSequence(end: 10) {
 
 //: But there is no need to declare the generator as a separated entity, we can use the **anyGenerator** utility method with the **AnyGenerator<T>** class to make this example more compact: 
 
-class CompactFibonacciSequence : SequenceType {
+class CompactFibonacciSequence : Sequence {
     var endAt:Int
     
     init(end:Int){
         endAt = end
     }
     
-    func generate() -> AnyGenerator<Int> {
+    func makeIterator() -> AnyIterator<Int> {
         var last = (0,1)
         var lastIteration = 0
         
-        return AnyGenerator{
+        return AnyIterator{
             guard lastIteration<self.endAt else {
                 return nil
             }
@@ -96,7 +96,7 @@ for f in CompactFibonacciSequence(end: 10) {
 var last = (2,1)
 var c = 0
 
-let lucas = AnyGenerator{
+let lucas = AnyIterator{
     ()->Int? in
     guard c<10 else {
         return nil
@@ -123,21 +123,21 @@ func luc(n:Int)->Int {
 }
 
 c = 0
-var compactLucas = AnyGenerator{ c<10 ? luc(c+1): nil }
+var compactLucas = AnyIterator{ c<10 ? luc(n: c+1): nil }
 
 let a2 = Array(compactLucas) //[2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
 
 //: To try out some of the functional(ish) facilities that **SequenceType** provide, we'll now build a derived sequence that will only return *even* numbers from the Lucas sequence:
 
 c = 0
-var evenCompactLucas = AnyGenerator{ c<10 ? luc(c+1): nil }.filter({$0 % 2 == 0})
+var evenCompactLucas = AnyIterator{ c<10 ? luc(n: c+1): nil }.filter({$0 % 2 == 0})
 
 let a3 = Array(evenCompactLucas) //[2, 4, 18, 76]
 
 //: But now, what it we remove the nil termination requirement described above to build an infinite sequence of all the possible Lucas numbers?
 
 c = 0
-var infiniteLucas = AnyGenerator{luc(c+1)}
+var infiniteLucas = AnyIterator{luc(n: c+1)}
 
 
 let a4 = Array(infiniteLucas.prefix(10)) //[2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
@@ -156,10 +156,10 @@ for var f in onlyEvenLucas.prefix(10){
 
 
 //: Let's see visually what's happening if we remove *.lazy* using a more verbose infinite sequence of integers that will print some text every time a value is requested from the generator:
-class InfiniteSequence :SequenceType {
-    func generate() -> AnyGenerator<Int> {
+class InfiniteSequence :Sequence {
+    func makeIterator() -> AnyIterator<Int> {
         var i = 0
-        return AnyGenerator{
+        return AnyIterator{
             print("# Returning "+String(i))
             i += 1
             return i
@@ -168,7 +168,7 @@ class InfiniteSequence :SequenceType {
 }
 
 //: Again, remove ".lazy" and grab a coffee...
-var fs = InfiniteSequence().lazy.filter({$0 % 2 == 0}).generate()
+var fs = InfiniteSequence().lazy.filter({$0 % 2 == 0}).makeIterator()
 
 for i in 1...5 {
     print(fs.next())

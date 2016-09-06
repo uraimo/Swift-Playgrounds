@@ -11,7 +11,7 @@ func tri(n:Int)->Int{
     if n <= 0 {
         return 0
     }
-    return n+tri(n-1)
+    return n+tri(n: n-1)
 }
 
 //: With tail recursion
@@ -20,10 +20,10 @@ func ttri(n:Int, acc:Int=0)->Int {
     if n<1 {
         return acc
     }
-    return ttri(n-1,acc:acc+n)
+    return ttri(n: n-1,acc:acc+n)
 }
 
-ttri(300)
+ttri(n: 300)
 let verify = (300*(300+1))/2
 
 //: With a trampoline
@@ -41,12 +41,12 @@ func tritr(n:Int)->Int {
         }
         return .Call({
             ()->Result<Int> in
-            return ttri(n-1,acc: acc+n)
+            return ttri(n: n-1,acc: acc+n)
         })
     }
     
     let acc = 0
-    var res = ttri(n,acc:acc)
+    var res = ttri(n: n,acc:acc)
     
     while true {
         switch res {
@@ -59,11 +59,11 @@ func tritr(n:Int)->Int {
 }
 
 
-tritr(300)
+tritr(n: 300)
 
 //: withTrampoline utility function, that turns CPS functions into functions with an embedded trampoline
 
-func withTrampoline<V,A>(f:(V,A)->Result<A>) -> ((V,A)->A){
+func withTrampoline<V,A>(f:@escaping (V,A)->Result<A>) -> ((V,A)->A){
     return { (value:V,accumulator:A)->A in
         var res = f(value,accumulator)
         
@@ -78,17 +78,17 @@ func withTrampoline<V,A>(f:(V,A)->Result<A>) -> ((V,A)->A){
     }
 }
 
-var fin: (n:Int, a:Int) -> Result<Int> = {_,_ in .Done(0)}
+var fin: (_ n:Int, _ a:Int) -> Result<Int> = {_,_ in .Done(0)}
 fin = { (n:Int, a:Int) -> Result<Int> in
     if n<1 {
         return .Done(a)
     }
     return .Call({
         ()->Result<Int> in
-        return fin(n: n-1,a: a+n)
+        return fin(n-1,a+n)
     })
 }
-let f = withTrampoline(fin)
+let f = withTrampoline(f: fin)
 
 f(30,0)
 
@@ -102,7 +102,7 @@ enum Result2<V,A>{
 }
 
 
-func withTrampoline2<V,A>(f:(V,A)->Result2<V,A>) -> ((V,A)->A){
+func withTrampoline2<V,A>(f:@escaping (V,A)->Result2<V,A>) -> ((V,A)->A){
     return { (value:V,accumulator:A)->A in
         var res = f(value,accumulator)
         
