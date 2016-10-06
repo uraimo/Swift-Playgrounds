@@ -32,14 +32,14 @@ testUnion.f  // 1234567
 testUnion.i  // 1234613304
 testUnion.asChar // (56, 180, 150, 73)
 
-var fv:Float32 = unsafeBitCast(Int32(33), Float.self)
+var fv:Float32 = unsafeBitCast(Int32(33), to: Float.self)
 
-strideof(TestUnion)  // 4 bytes
+MemoryLayout<TestUnion>.stride  // 4 bytes
 
 //: ### The size of things
 //:
 
-print(strideof(CChar))  // 1
+print(MemoryLayout<CChar>.stride)  // 1
 
 struct Struct1{
     let anInt8:Int64
@@ -47,8 +47,8 @@ struct Struct1{
     let b:Bool
 }
 
-print(sizeof(Struct1))    // 11 (8+2+1)
-print(strideof(Struct1))  // 16 (8+4+4)
+print(MemoryLayout<Struct1>.size)    // 11 (8+2+1)
+print(MemoryLayout<Struct1>.stride)  // 16 (8+4+4)
 
 //: ### Macros
 //:
@@ -63,43 +63,47 @@ var i:Int32 = 42
 giveMeUnsafeMutablePointer(&i);
 
 
-let namestr = withUnsafePointer(&name, { (ptr) -> String? in
-    let charPtr = UnsafeMutablePointer<CChar>(ptr)
-    charPtr[2] = 35 // # character
-    return String.fromCString(charPtr)
+let namestr = withUnsafePointer(to: &name, { (ptr) -> String? in
+    let charPtr = ptr.withMemoryRebound(to: CChar.self, capacity: 11, {
+        (cptr) -> String in
+            return String(validatingUTF8: cptr)!
+    })
+    return charPtr
 })
+
+
 print(namestr!) //IAmAString
 
 
 let array: [Int8] = [ 65, 66, 67, 0 ]
 puts(array)  // ABC
 array.withUnsafeBufferPointer { (ptr: UnsafeBufferPointer<Int8>) in
-    puts(ptr.baseAddress + 1) //BC
+    puts(ptr.baseAddress! + 1) //BC
 }
 
 //: ### Allocating memory
 //:
 
-var ptr = UnsafeMutablePointer<CChar>.alloc(10)
+var ptr = UnsafeMutablePointer<CChar>.allocate(capacity: 10)
 //Or alternatively: var ptr = UnsafeMutablePointer<CChar>(malloc(10*strideof(CChar)))
 
-ptr.initializeFrom([CChar](count: 10, repeatedValue: 0))
+ptr.initialize(from: Array<CChar>(repeating: 0, count: 10))
 
 //Do something with the object
 ptr[3] = 42
 
-ptr.destroy() //Clean up
+ptr.deinitialize() //Clean up
 
-ptr.dealloc(10) //Let's free the memory we allocated
+ptr.deallocate(capacity: 10) //Let's free the memory we allocated
 //Or alternatively: free(ptr)
 
 
-var sptr = UnsafeMutablePointer<String>.alloc(1)
-sptr.initialize("Test String")
-print(sptr.memory)
+var sptr = UnsafeMutablePointer<String>.allocate(capacity: 1)
+sptr.initialize(to: "Test String")
+print(sptr.pointee)
 
-sptr.destroy()
-sptr.dealloc(1)
+sptr.deinitialize()
+sptr.deallocate(capacity: 1)
 
 //: Is initialization really necessary?
 
@@ -108,13 +112,13 @@ struct MyStruct1{
     var int2:Int
 }
 
-var s1ptr = UnsafeMutablePointer<MyStruct1>.alloc(5)
+var s1ptr = UnsafeMutablePointer<MyStruct1>.allocate(capacity: 5)
 
 s1ptr[0] = MyStruct1(int1: 1, int2: 2)
 s1ptr[1] = MyStruct1(int1: 1, int2: 2) //Doesn't seems so, this always works!
 
-s1ptr.destroy()
-s1ptr.dealloc(5)
+s1ptr.deinitialize()
+s1ptr.deallocate(capacity: 5)
 
 //: Let's try introducing a reference type property to MyStruct
 
@@ -128,48 +132,49 @@ struct MyStruct2{
     var tc:TestClass
 }
 
-var s2ptr = UnsafeMutablePointer<MyStruct2>.alloc(5)
-s2ptr.initializeFrom([MyStruct2(int1: 1, int2: 2, tc: TestClass()),   // Remove the initialization
+var s2ptr = UnsafeMutablePointer<MyStruct2>.allocate(capacity: 5)
+s2ptr.initialize(from: [MyStruct2(int1: 1, int2: 2, tc: TestClass()),   // Remove the initialization
                       MyStruct2(int1: 1, int2: 2, tc: TestClass())])  // and you'll have a crash below
 
 s2ptr[0] = MyStruct2(int1: 1, int2: 2, tc: TestClass())
 s2ptr[1] = MyStruct2(int1: 1, int2: 2, tc: TestClass())
 
-s2ptr.destroy()
-s2ptr.dealloc(5)
+s2ptr.deinitialize()
+s2ptr.deallocate(capacity: 5)
 
 
 //: Other examples from the malloc family:
 
-var val = [CChar](count: 10, repeatedValue: 1)
-var buf = [CChar](count: val.count, repeatedValue: 0)
-memcpy(&buf, &val, buf.count*strideof(CChar))
+var val = Array<CChar>(repeating: 0, count: 10)
+var buf = Array<CChar>(repeating: 0, count: val.count)
+memcpy(&buf, &val, buf.count*MemoryLayout<CChar>.stride)
 buf
 
-let mptr = UnsafeMutablePointer<Int>(mmap(nil, Int(getpagesize()), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0))
-mptr[0] = 3
+let mptr = mmap(nil, Int(getpagesize()), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)!
+let iptr = mptr.bindMemory(to: Int.self, capacity: Int(getpagesize())/MemoryLayout<Int>.stride)
+iptr[0] = 3
 
 munmap(ptr, Int(getpagesize()))
 
 //: ### Pointer arithmetic
 //:
 
-var aptr = UnsafeMutablePointer<CChar>.alloc(5)
-aptr.initializeFrom([33,34,35,36,37])
+var aptr = UnsafeMutablePointer<CChar>.allocate(capacity: 5)
+aptr.initialize(from: [33,34,35,36,37])
 
-print(aptr.successor().memory) // 34
-print(aptr.advancedBy(3).memory) // 36
-print(aptr.advancedBy(3).predecessor().memory) // 35
+print(aptr.successor().pointee) // 34
+print(aptr.advanced(by: 3).pointee) // 36
+print(aptr.advanced(by: 3).predecessor().pointee) // 35
 
-print(aptr.distanceTo(aptr.advancedBy(3))) // 3
+print(aptr.distance(to: aptr.advanced(by: 3))) // 3
 
 
-print((aptr+1).memory) // 34
-print((aptr+3).memory) // 36
-print(((aptr+3)-1).memory) // 35
+print((aptr+1).pointee) // 34
+print((aptr+3).pointee) // 36
+print(((aptr+3)-1).pointee) // 35
 
-aptr.destroy()
-aptr.dealloc(5)
+aptr.deinitialize()
+aptr.deallocate(capacity: 5)
 
 //: ### Working with strings
 //:
@@ -184,7 +189,7 @@ testString.withCString { (ptr: UnsafePointer<Int8>) -> Void in
 }
 
 
-let swiftString = String.fromCString(anotherName)
+let swiftString = String(validatingUTF8: anotherName)
 
 func isPrintable(text:String)->Bool{
     for scalar in text.unicodeScalars {
@@ -196,7 +201,7 @@ func isPrintable(text:String)->Bool{
     return true
 }
 
-isPrintable("No, it's not 😅")
+isPrintable(text: "No, it's not 😅")
 
 
 //: ### Working with closures
@@ -205,7 +210,7 @@ isPrintable("No, it's not 😅")
 printStuff(); // Imported C function defined in CExample.c
 
 let fun = returnAFunction(); // Imported C function defined in CExample.c
-fun()
+fun!()
 
 //: Unmanaged
 
@@ -214,7 +219,7 @@ class AClass : CustomStringConvertible {
     var aProperty:Int=0
 
     var description: String {
-        return "A \(self.dynamicType) with property \(self.aProperty)"
+        return "A \(type(of: self)) with property \(self.aProperty)"
     }
 }
 
@@ -222,10 +227,10 @@ var value = AClass()
 
 let unmanaged = Unmanaged.passRetained(value)
 let uptr = unmanaged.toOpaque()
-let vptr = UnsafeMutablePointer<Void>(uptr)
+let vptr = UnsafeMutableRawPointer(uptr)
 
-aCFunctionWithContext(vptr){ (p:UnsafeMutablePointer<Void>) -> Void in
-    var c = Unmanaged<AClass>.fromOpaque(COpaquePointer(p)).takeUnretainedValue()
+aCFunctionWithContext(vptr){ (p:UnsafeMutableRawPointer?) -> Void in
+    var c = Unmanaged<AClass>.fromOpaque(p!).takeUnretainedValue()
     c.aProperty = 2
     print(c) //A AClass with property 2
 }
