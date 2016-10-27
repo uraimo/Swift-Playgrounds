@@ -4,6 +4,7 @@ A collection of Swift 3 playgrounds used in my posts.
 
 For the original Swift 2 playgrounds check out the [swift 2 branch](https://github.com/uraimo/Swift-Playgrounds/tree/swift2).
 
+* 27th October 2016: [Unowned or Weak? Lifetime and Performance](https://www.uraimo.com/2016/10/27/unowned-or-weak-lifetime-and-performance/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-10-27-UnownedWeakPlayground.playground.zip)
 * 5th May 2016: [Recursive Tail Calls and Trampolines in Swift](https://www.uraimo.com/2016/05/05/recursive-tail-calls-and-trampolines-in-swift/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-05-05-recursive-trampoline.zip)
 * 6th April 2016: [Swift and C: Everything you need to know](https://www.uraimo.com/2016/04/07/swift-and-c-everything-you-need-to-know) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-04-07-Swift-And-C.zip)
 * 5th February 2016: [Dealing with Bit Sets in Swift](https://www.uraimo.com/2016/02/05/Dealing-With-Bit-Sets-In-Swift) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2016-02-5-Bitwise-Playground.playground.zip)
