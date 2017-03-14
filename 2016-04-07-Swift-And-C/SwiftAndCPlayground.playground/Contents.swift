@@ -85,7 +85,7 @@ array.withUnsafeBufferPointer { (ptr: UnsafeBufferPointer<Int8>) in
 //:
 
 var ptr = UnsafeMutablePointer<CChar>.allocate(capacity: 10)
-//Or alternatively: var ptr = UnsafeMutablePointer<CChar>(malloc(10*strideof(CChar)))
+//Or alternatively: var ptr = malloc(10*MemoryLayout<CChar>.stride).bindMemory(to: CChar.self, capacity: 10*MemoryLayout<CChar>.stride)
 
 ptr.initialize(from: Array<CChar>(repeating: 0, count: 10))
 
@@ -151,6 +151,13 @@ memcpy(&buf, &val, buf.count*MemoryLayout<CChar>.stride)
 buf
 
 let mptr = mmap(nil, Int(getpagesize()), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)!
+
+if (unsafeBitCast(mptr, to: Int.self) == -1) {    //MAP_FAILED not available, but its value is (void*)-1
+    perror("dma mmap error")
+    abort()
+}
+
+// Bind the *uninitialized* memory to the Int type, for initialized memory we should have used .assumingMemoryBound(to:)
 let iptr = mptr.bindMemory(to: Int.self, capacity: Int(getpagesize())/MemoryLayout<Int>.stride)
 iptr[0] = 3
 
