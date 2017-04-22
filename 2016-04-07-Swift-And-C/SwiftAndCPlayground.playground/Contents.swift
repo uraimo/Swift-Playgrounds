@@ -244,3 +244,26 @@ aCFunctionWithContext(vptr){ (p:UnsafeMutableRawPointer?) -> Void in
 
 
 
+var str = "iAmAStringHello"
+
+withUnsafeBytes(of:&str){ ptr in
+    ptr.forEach{
+        //Print the content of the underlying _StringCore structure
+        print(String(format:"0x%x",$0))
+    }
+    let strptr = UnsafePointer<UInt8>(bitPattern:
+        UInt(ptr[0]) |              // e.g. 0x26
+        (UInt(ptr[1]) << 8) |       //      0x58
+        (UInt(ptr[2]) << 16) |      //      0xef
+        (UInt(ptr[3]) << 24) |      //      0x0e
+        (UInt(ptr[4]) << 32) |      //      0x01
+        (UInt(ptr[5]) << 40) |      //      0x00
+        (UInt(ptr[6]) << 48) |      //      0x00
+        (UInt(ptr[7]) << 56) )      //      0x00
+    
+    print(String(format:"0x%x",UInt(bitPattern: strptr)))
+    
+    //Print the c string stored at address 0x000000010eef5826
+    print(String(cString:strptr!))
+}
+
