@@ -1,14 +1,19 @@
-// All About Concurrency in Swift: The Present Playground
-//
-//
-//
+/*: 
+ 
+ ## All About Concurrency in Swift - Part 1: The Present Playground
+
+ Read the post at [uraimo.com](https://ww.uraimo.com/2017/05/07/all-about-concurrency-in-swift-1-the-present/)
+
+*/
+
+
 
 /*:
  # Contents
  
- * [Timer and Concurrency Primitives](#Primitives)
- * [GCD- Grand Central Dispatch](#GCD)
- * [NSOperationQueue](#NSOperationQueue)
+ * [Timer and Concurrency Primitives](#)
+ * [GCD- Grand Central Dispatch](@next)
+ * [NSOperationQueue](@last)
  */
 
 import Foundation

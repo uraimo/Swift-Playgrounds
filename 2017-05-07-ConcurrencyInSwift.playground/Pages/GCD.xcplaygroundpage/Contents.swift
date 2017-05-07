@@ -1,3 +1,12 @@
+/*:
+ 
+ ## All About Concurrency in Swift - Part 1: The Present Playground
+ 
+ Read the post at [uraimo.com](https://ww.uraimo.com/2017/05/07/all-about-concurrency-in-swift-1-the-present/)
+ 
+ */
+
+
 //: [Previous - Primitives](@previous)
 
 import Foundation
@@ -98,17 +107,17 @@ runMe()
 public extension DispatchQueue {
     
     private static var _onceTokens = [Int]()
+    private static var internalQueue = DispatchQueue(label: "dispatchqueue.once")
     
     public class func once(token: Int, closure: (Void)->Void) {
-        objc_sync_enter(self);
-        defer { objc_sync_exit(self) }
-        
-        if _onceTokens.contains(token) {
-            return
-        }else{
-            _onceTokens.append(token)
+        internalQueue.sync {
+            if _onceTokens.contains(token) {
+                return
+            }else{
+                _onceTokens.append(token)
+            }
+            closure()
         }
-        closure()
     }
 }
 
@@ -117,10 +126,10 @@ DispatchQueue.once(token: t) {
     print("only once!")
 }
 DispatchQueue.once(token: t) {
-    print("only once!")
+    print("Two times!?")
 }
 DispatchQueue.once(token: t) {
-    print("only once!")
+    print("Three times!!?")
 }
 
 

@@ -1,3 +1,12 @@
+/*:
+ 
+ ## All About Concurrency in Swift - Part 1: The Present Playground
+ 
+ Read the post at [uraimo.com](https://ww.uraimo.com/2017/05/07/all-about-concurrency-in-swift-1-the-present/)
+ 
+ */
+
+
 //: [Previous - GCD](@previous)
 
 import Foundation
