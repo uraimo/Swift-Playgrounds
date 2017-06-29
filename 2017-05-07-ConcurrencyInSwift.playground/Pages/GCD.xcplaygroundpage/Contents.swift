@@ -74,14 +74,14 @@ globalDefault.sync {
 
 //: Execution with a final completion barrier
 
-globalDefault.sync {
-    DispatchQueue.concurrentPerform(iterations: 5) { (id:Int) in
-        sleep(UInt32(id)+1)
-        print("Async on globalDefault, 5 times: "+String(id))
+concurrentQueue.async {
+    DispatchQueue.concurrentPerform(iterations: 20) { (id:Int) in
+        sleep(1)
+        print("Async on concurrentQueue, 5 times: "+String(id))
     }
 }
 
-globalDefault.async (flags: .barrier) {
+concurrentQueue.async (flags: .barrier) {
     print("All 5 concurrent tasks completed")
 }
 
