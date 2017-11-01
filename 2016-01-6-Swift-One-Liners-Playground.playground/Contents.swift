@@ -33,8 +33,7 @@ valid //true
 let valid2 = words.contains(where:tweet.contains)
 valid2 //true
 
-let valid3 = tweet.characters
-                .split(separator:" ")
+let valid3 = tweet.split(separator:" ")
                 .lazy
                 .map(String.init)
                 .contains(where:Set(words).contains)
@@ -44,8 +43,7 @@ valid3 //true
 
 
 let path = Bundle.main.path(forResource:"test", ofType: "txt")
-let lines = try? String(contentsOfFile: path!).characters
-                     .split{$0 == "\n"}
+let lines = try? String(contentsOfFile: path!).split{$0 == "\n"}
                      .map(String.init)
 
 if let lines=lines {
@@ -67,19 +65,19 @@ let name = "uraimo"
 
 //Obvious implementation
 extension Sequence{
-   typealias Element = Self.Iterator.Element 
+    typealias Element = Self.Iterator.Element
     
-   func partitionBy(fu: (Element)->Bool)->([Element],[Element]){
-       var first=[Element]() 
-       var second=[Element]() 
-       for el in self {
-          if fu(el) { 
-             first.append(el) 
-          }else{ 
-             second.append(el) 
-          } 
-       } 
-       return (first,second) 
+    func partitionBy(fu: (Element)->Bool)->([Element],[Element]){
+        var first: [Element] = []
+        var second: [Element] = []
+        for el in self {
+          if fu(el) {
+             first.append(el)
+          }else{
+             second.append(el)
+          }
+        }
+        return (first,second)
    } 
 } 
 
@@ -114,7 +112,7 @@ part3 // ([58, 49], [82, 76, 88, 90])
 let xmlDoc = try? AEXMLDocument(xmlData: NSData(contentsOf: URL(string:"https://www.ibiblio.org/xml/examples/shakespeare/hen_v.xml")!)!) 
 
 if let xmlDoc=xmlDoc {
-    var prologue = xmlDoc.root.children[6]["PROLOGUE"]["SPEECH"]
+    let prologue = xmlDoc.root.children[6]["PROLOGUE"]["SPEECH"]
     prologue.children[1].stringValue // Now all the youth of England are on fire,
     prologue.children[2].stringValue // And silken dalliance in the wardrobe lies:
     prologue.children[3].stringValue // Now thrive the armourers, and honour's thought

@@ -294,11 +294,11 @@ public class AEXMLDocument: AEXMLElement {
     /// Root (the first child element) element of XML Document **(AEXMLError element if not exists)**.
     public var root: AEXMLElement { return children.count == 1 ? children.first! : AEXMLElement(AEXMLElement.errorElementName, value: "XML Document must have root element.") }
     
-    private struct Defaults {
-        static let version = 1.0
-        static let encoding = "utf-8"
-        static let standalone = "no"
-        static let documentName = "AEXMLDocument"
+    public struct Defaults {
+        public static let version = 1.0
+        public static let encoding = "utf-8"
+        public static let standalone = "no"
+        public static let documentName = "AEXMLDocument"
     }
     
     // MARK: Lifecycle

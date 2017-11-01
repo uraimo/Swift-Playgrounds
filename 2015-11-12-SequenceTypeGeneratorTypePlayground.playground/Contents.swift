@@ -142,16 +142,16 @@ var infiniteLucas = AnyIterator{luc(n: c+1)}
 
 let a4 = Array(infiniteLucas.prefix(10)) //[2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
 
-for var f in infiniteLucas.prefix(10){
-    print(f)
+infiniteLucas.prefix(10).forEach{
+    print($0)
 }
 
 //: But let's go a step further and again apply a *filter* to our sequence, to obtain a sequence of even Lucas numbers:
 //:
 //: Remove ".lazy" and grab a coffee...
 var onlyEvenLucas = infiniteLucas.lazy.filter({$0 % 2 == 0})
-for var f in onlyEvenLucas.prefix(10){
-    print(f)
+onlyEvenLucas.prefix(10).forEach{
+    print($0)
 }
 
 
@@ -170,8 +170,8 @@ class InfiniteSequence :Sequence {
 //: Again, remove ".lazy" and grab a coffee...
 var fs = InfiniteSequence().lazy.filter({$0 % 2 == 0}).makeIterator()
 
-for i in 1...5 {
-    print(fs.next())
+fs.forEach {
+    print($0)
 }
 
 

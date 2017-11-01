@@ -109,7 +109,7 @@ public extension DispatchQueue {
     private static var _onceTokens = [Int]()
     private static var internalQueue = DispatchQueue(label: "dispatchqueue.once")
     
-    public class func once(token: Int, closure: (Void)->Void) {
+    public class func once(token: Int, closure: ()->Void) {
         internalQueue.sync {
             if _onceTokens.contains(token) {
                 return

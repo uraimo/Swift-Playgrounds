@@ -31,7 +31,7 @@ PlaygroundPage.current.needsIndefiniteExecution = true
  Printing a message after 5 seconds with a Timer
 */
 class Handler : NSObject{
-    func after5Sec(timer:Timer){
+    @objc func after5Sec(timer:Timer){
         print("Called after 5 seconds!")
         if let userInfo = timer.userInfo as? [String:String] {
             print("Invoked with param: " + userInfo["param1"]!)
@@ -59,7 +59,7 @@ let timer = Timer.scheduledTimer(timeInterval: 5,
 class MyThread : Thread {
     override func main(){
         print("Thread started, sleep for 2 seconds...")
-        sleep(2)
+        Thread.sleep(forTimeInterval: 2)
         print("Done sleeping, exiting thread")
     }
 }

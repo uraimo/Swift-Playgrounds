@@ -60,8 +60,8 @@ do{
     }
     
     try throwsDetailedError()
-    var value = try! shouldNeverThrow()
-    var imNil = try? throwsDetailedError()
+    var _ = try! shouldNeverThrow()
+    var _ = try? throwsDetailedError()
 }catch MyError2.GenericError {
     print("GenericError")
 }catch MyError2.DetailedError(let message) {
