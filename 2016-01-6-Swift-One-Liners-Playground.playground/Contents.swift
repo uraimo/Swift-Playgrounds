@@ -149,7 +149,7 @@ var primes = Set(2...n)
 
 
 (2...Int(sqrt(Double(n)))).forEach{
-     primes.subtract(Set(stride(from:2*$0, to:n, by:$0)))
+     primes.subtract(Set(stride(from:2*$0, to:n+1, by:$0)))
 }
 primes.sorted()
 
@@ -158,7 +158,7 @@ primes.sorted()
 var sameprimes = Set(2...n) 
 
 sameprimes.subtract(Set(2...Int(sqrt(Double(n)))) 
-                   .flatMap{stride(from:2*$0, to:n, by:$0)}) 
+                   .flatMap{stride(from:2*$0, to:n+1, by:$0)}) 
 sameprimes.sorted()
 
 
