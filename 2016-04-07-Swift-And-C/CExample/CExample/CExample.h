@@ -13,14 +13,14 @@
 
 #define IAMADEFINE 42
 
-void printStuff();
+void printStuff(void);
 void giveMeUnsafeMutablePointer(int* param);
 void giveMeUnsafePointer(const int * param);
 void functionThatExpectsAConstCharPointer(const char * param);
 
 typedef void (*function_type)(void);
 
-function_type returnAFunction();
+function_type returnAFunction(void);
 
 void aCFunctionWithContext(void* ctx, void (*function)(void* ctx));
 

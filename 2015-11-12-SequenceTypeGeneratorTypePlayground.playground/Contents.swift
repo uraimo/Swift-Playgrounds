@@ -123,21 +123,41 @@ func luc(n:Int)->Int {
 }
 
 c = 0
-var compactLucas = AnyIterator{ c<10 ? luc(n: c+1): nil }
+var compactLucas = AnyIterator<Int>{
+                                if c<10 {
+                                    let l = luc(n: c)
+                                    c+=1
+                                    return l
+                                }else{
+                                    return nil
+                                }
+                              }.lazy
 
 let a2 = Array(compactLucas) //[2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
 
 //: To try out some of the functional(ish) facilities that **SequenceType** provide, we'll now build a derived sequence that will only return *even* numbers from the Lucas sequence:
 
 c = 0
-var evenCompactLucas = AnyIterator{ c<10 ? luc(n: c+1): nil }.filter({$0 % 2 == 0})
+var evenCompactLucas = AnyIterator<Int>{
+                                    if c<10 {
+                                        let l = luc(n: c)
+                                        c+=1
+                                        return l
+                                    }else{
+                                        return nil
+                                    }
+                                }.lazy.filter({$0 % 2 == 0})
 
 let a3 = Array(evenCompactLucas) //[2, 4, 18, 76]
 
 //: But now, what it we remove the nil termination requirement described above to build an infinite sequence of all the possible Lucas numbers?
 
 c = 0
-var infiniteLucas = AnyIterator{luc(n: c+1)}
+var infiniteLucas = AnyIterator<Int>{
+                            let l = luc(n: c)
+                            c+=1
+                            return l
+                         }
 
 
 let a4 = Array(infiniteLucas.prefix(10)) //[2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
@@ -170,7 +190,7 @@ class InfiniteSequence :Sequence {
 //: Again, remove ".lazy" and grab a coffee...
 var fs = InfiniteSequence().lazy.filter({$0 % 2 == 0}).makeIterator()
 
-fs.forEach {
+fs.prefix(10).forEach {
     print($0)
 }
 

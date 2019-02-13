@@ -32,7 +32,7 @@ testUnion.f  // 1234567
 testUnion.i  // 1234613304
 testUnion.asChar // (56, 180, 150, 73)
 
-var fv:Float32 = unsafeBitCast(Int32(33), to: Float.self)
+var fv:Float32 = Float(bitPattern: UInt32(bitPattern: Int32(33)))
 
 MemoryLayout<TestUnion>.stride  // 4 bytes
 
@@ -84,7 +84,7 @@ array.withUnsafeBufferPointer { (ptr: UnsafeBufferPointer<Int8>) in
 //: ### Allocating memory
 //:
 
-var ptr = UnsafeMutablePointer<CChar>.allocate(capacity: 10)
+var ptr = UnsafeMutableBufferPointer<CChar>.allocate(capacity: 10)
 //Or alternatively: var ptr = malloc(10*MemoryLayout<CChar>.stride).bindMemory(to: CChar.self, capacity: 10*MemoryLayout<CChar>.stride)
 
 ptr.initialize(from: Array<CChar>(repeating: 0, count: 10))
@@ -92,9 +92,7 @@ ptr.initialize(from: Array<CChar>(repeating: 0, count: 10))
 //Do something with the object
 ptr[3] = 42
 
-ptr.deinitialize() //Clean up
-
-ptr.deallocate(capacity: 10) //Let's free the memory we allocated
+ptr.deallocate() //Let's free the memory we allocated
 //Or alternatively: free(ptr)
 
 
@@ -102,8 +100,8 @@ var sptr = UnsafeMutablePointer<String>.allocate(capacity: 1)
 sptr.initialize(to: "Test String")
 print(sptr.pointee)
 
-sptr.deinitialize()
-sptr.deallocate(capacity: 1)
+sptr.deinitialize(count:1)
+sptr.deallocate()
 
 //: Is initialization really necessary?
 
@@ -117,8 +115,8 @@ var s1ptr = UnsafeMutablePointer<MyStruct1>.allocate(capacity: 5)
 s1ptr[0] = MyStruct1(int1: 1, int2: 2)
 s1ptr[1] = MyStruct1(int1: 1, int2: 2) //Doesn't seems so, this always works!
 
-s1ptr.deinitialize()
-s1ptr.deallocate(capacity: 5)
+s1ptr.deinitialize(count:5)
+s1ptr.deallocate()
 
 //: Let's try introducing a reference type property to MyStruct
 
@@ -132,15 +130,14 @@ struct MyStruct2{
     var tc:TestClass
 }
 
-var s2ptr = UnsafeMutablePointer<MyStruct2>.allocate(capacity: 5)
+var s2ptr = UnsafeMutableBufferPointer<MyStruct2>.allocate(capacity: 5)
 s2ptr.initialize(from: [MyStruct2(int1: 1, int2: 2, tc: TestClass()),   // Remove the initialization
                       MyStruct2(int1: 1, int2: 2, tc: TestClass())])  // and you'll have a crash below
 
 s2ptr[0] = MyStruct2(int1: 1, int2: 2, tc: TestClass())
 s2ptr[1] = MyStruct2(int1: 1, int2: 2, tc: TestClass())
 
-s2ptr.deinitialize()
-s2ptr.deallocate(capacity: 5)
+s2ptr.deallocate()
 
 
 //: Other examples from the malloc family:
@@ -152,7 +149,7 @@ buf
 
 let mptr = mmap(nil, Int(getpagesize()), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)!
 
-if (unsafeBitCast(mptr, to: Int.self) == -1) {    //MAP_FAILED not available, but its value is (void*)-1
+if (Int(bitPattern:mptr) == -1) {    //MAP_FAILED not available, but its value is (void*)-1
     perror("dma mmap error")
     abort()
 }
@@ -161,13 +158,13 @@ if (unsafeBitCast(mptr, to: Int.self) == -1) {    //MAP_FAILED not available, bu
 let iptr = mptr.bindMemory(to: Int.self, capacity: Int(getpagesize())/MemoryLayout<Int>.stride)
 iptr[0] = 3
 
-munmap(ptr, Int(getpagesize()))
+munmap(mptr, Int(getpagesize()))
 
 //: ### Pointer arithmetic
 //:
 
 var aptr = UnsafeMutablePointer<CChar>.allocate(capacity: 5)
-aptr.initialize(from: [33,34,35,36,37])
+aptr.initialize(from: [33,34,35,36,37], count: 5)
 
 print(aptr.successor().pointee) // 34
 print(aptr.advanced(by: 3).pointee) // 36
@@ -180,8 +177,7 @@ print((aptr+1).pointee) // 34
 print((aptr+3).pointee) // 36
 print(((aptr+3)-1).pointee) // 35
 
-aptr.deinitialize()
-aptr.deallocate(capacity: 5)
+aptr.deallocate()
 
 //: ### Working with strings
 //:
@@ -237,7 +233,7 @@ let uptr = unmanaged.toOpaque()
 let vptr = UnsafeMutableRawPointer(uptr)
 
 aCFunctionWithContext(vptr){ (p:UnsafeMutableRawPointer?) -> Void in
-    var c = Unmanaged<AClass>.fromOpaque(p!).takeUnretainedValue()
+    let c = Unmanaged<AClass>.fromOpaque(p!).takeUnretainedValue()
     c.aProperty = 2
     print(c) //A AClass with property 2
 }
@@ -245,6 +241,7 @@ aCFunctionWithContext(vptr){ (p:UnsafeMutableRawPointer?) -> Void in
 
 
 var str = "iAmAStringHello"
+/*
 
 withUnsafeBytes(of:&str){ ptr in
     ptr.forEach{
@@ -266,4 +263,4 @@ withUnsafeBytes(of:&str){ ptr in
     //Print the c string stored at address 0x000000010eef5826
     print(String(cString:strptr!))
 }
-
+*/
