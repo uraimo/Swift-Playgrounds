@@ -109,29 +109,29 @@ fi2 /* Int? with content "2" */
 
 var fa1 = [1,2,3,4,5,6]
 
-var fa1m = fa1.flatMap({$0 * 2})
+var fa1m = fa1.compactMap({$0 * 2})
 fa1m /*[Int] with content [2, 4, 6, 8, 10, 12] */
 
 var fao1:[Int?] = [1,2,3,4,nil,6]
 
-var fao1m = fao1.flatMap({$0})
+var fao1m = fao1.compactMap({$0})
 fao1m /*[Int] with content [1, 2, 3, 4, 6] */
 
 var fa2 = [[1,2],[3],[4,5,6]]
 
-var fa2m = fa2.flatMap({$0})
+var fa2m = fa2.compactMap({$0})
 fa2m /*[Int] with content [1, 2, 3, 4, 6] */
 
 
 // .map Additional examples Revisited
 
 var far1 = ["1","2","3","a"]
-var far1m = far1.flatMap {
+var far1m = far1.compactMap {
     Int($0)
 }
 far1m /* [Int] with content [1, 2, 3] */
 
-far1m = far1.flatMap {
+far1m = far1.compactMap {
         Int($0)
     }
     .map {$0 * 2}
