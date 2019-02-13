@@ -1,6 +1,6 @@
 # Swift-Playgrounds
 
-A collection of Swift 3 playgrounds used in my posts.
+A collection of Swift 4 playgrounds used in my posts.
 
 
 * 7 May 2017: [All about Concurrency in Swift - Part 1: The Present](https://www.uraimo.com/2017/05/07/all-about-concurrency-in-swift-1-the-present/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2017-05-07-ConcurrencyInSwift.playground.zip)
@@ -13,3 +13,4 @@ A collection of Swift 3 playgrounds used in my posts.
 * 3rd November 2015: [Swift 2.1 Error Handling: from Objective-C to Swift and Back](http://www.uraimo.com/2015/11/03/error-handling-from-objective-c-to-swift-2-and-back/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2015-11-Swift2ErrorHandling.zip)
 * 8th October 2015: [Swift 2.0: Map and FlatMap Demystified](http://www.uraimo.com/2015/10/08/Swift2-map-flatmap-demystified/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2015-10-MapFlatMapPlayground.playground.zip)
 * 29th September 2015: [Swift 2.1 Function Types Conversion: Covariance and Contravariance](http://www.uraimo.com/2015/09/29/Swift2.1-Function-Types-Conversion-Covariance-Contravariance/) [ZIP](https://github.com/uraimo/Swift-Playgrounds/raw/master/archives/2015-09-VariancePlayground.playground.zip)
+
